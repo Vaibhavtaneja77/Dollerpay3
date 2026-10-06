@@ -72,7 +72,7 @@ export default async function DepositDetailPage({ params }: { params: Promise<{ 
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <p className="text-sm font-semibold">Send only {deposit.network}</p>
-                    <p className="mt-1 text-sm text-zinc-600">Wait up to 15 minutes after payment. It will be automatically verified on blockchain.</p>
+                    <p className="mt-1 text-sm text-zinc-600">Wait up to a minutes after payment. It will be automatically verified on blockchain.</p>
                   </div>
                   <CountdownBadge
                     expiresAt={getExpiresAt(deposit.created_at, PENDING_DEPOSIT_WINDOW_MS)}

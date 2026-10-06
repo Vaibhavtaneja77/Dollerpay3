@@ -32,7 +32,8 @@ export default async function AdminTransactionsPage({ searchParams }: { searchPa
       const { data } = deposit.proof_path
         ? await admin.storage.from(PAYMENT_ASSET_BUCKET).createSignedUrl(deposit.proof_path, 60 * 10)
         : { data: null };
-      return { ...deposit, proofUrl: data?.signedUrl ?? null };
+      const profile = Array.isArray(deposit.profiles) ? deposit.profiles[0] : deposit.profiles;
+      return { ...deposit, userEmail: profile?.email ?? "Unknown", proofUrl: data?.signedUrl ?? null };
     })
   );
   const pendingCount = depositsWithProofs.filter((deposit) => deposit.status === "PENDING_DEPOSIT").length;
@@ -67,7 +68,7 @@ export default async function AdminTransactionsPage({ searchParams }: { searchPa
                   <StatusBadge status={deposit.status} label={deposit.status === "DEPOSIT_CONFIRMED" ? "Successfully Deposit" : undefined} />
                 </div>
                 <div className="grid grid-cols-2 gap-3 text-sm">
-                  <Info label="User" value={deposit.profiles?.email ?? "Unknown"} />
+                  <Info label="User" value={deposit.userEmail} />
                   <Info label="Amount" value={formatUsdt(deposit.amount_usdt)} />
                   <Info label="Coupon" value={deposit.coupon_code ? `${deposit.coupon_code} (+${formatUsdt(deposit.coupon_reward_usdt)})` : "None"} />
                   <Info label="Network" value={deposit.network} />
@@ -111,7 +112,7 @@ export default async function AdminTransactionsPage({ searchParams }: { searchPa
               {depositsWithProofs.map((deposit) => (
                 <tr key={deposit.id} className="border-t border-line align-top">
                   <td className="p-3 font-mono">{deposit.ticket_id}</td>
-                  <td>{deposit.profiles?.email ?? "Unknown"}</td>
+                  <td>{deposit.userEmail}</td>
                   <td>{formatUsdt(deposit.amount_usdt)}</td>
                   <td>{deposit.network}</td>
                   <td>{deposit.coupon_code ? `${deposit.coupon_code} (+${formatUsdt(deposit.coupon_reward_usdt)})` : "None"}</td>

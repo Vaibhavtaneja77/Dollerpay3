@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --focus: 0 0 0 3px rgba(24, 24, 27, .16);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background: #fbfbfa;
+  color: #050505;
+  font-feature-settings: "tnum";
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  transition: border-color .16s ease, background-color .16s ease, color .16s ease, box-shadow .16s ease, transform .16s ease, opacity .16s ease;
+}
+
+button:active {
+  transform: translateY(1px) scale(.99);
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+  }
+}
+
+.payment-success-ring {
+  background:
+    conic-gradient(from 0deg, #1a73e8, #34a853, #fbbc04, #ea4335, #1a73e8);
+  animation: payment-ring-spin 1.05s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.payment-success-check {
+  animation: payment-check-pop .42s ease-out .72s both;
+}
+
+@keyframes payment-ring-spin {
+  0% {
+    opacity: .4;
+    transform: rotate(-120deg) scale(.82);
+  }
+
+  72% {
+    opacity: 1;
+    transform: rotate(320deg) scale(1.06);
+  }
+
+  100% {
+    opacity: 1;
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@keyframes payment-check-pop {
+  0% {
+    opacity: 0;
+    transform: scale(.62);
+  }
+
+  70% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes route-progress {
+  0% {
+    transform: translateX(-105%);
+  }
+
+  55% {
+    transform: translateX(95%);
+  }
+
+  100% {
+    transform: translateX(205%);
+  }
+}
+
+.animate-route-progress {
+  animation: route-progress 1s ease-in-out infinite;
+}

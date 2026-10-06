@@ -6,7 +6,6 @@ export const MAX_UPLOAD_MB = 50;
 export const PENDING_DEPOSIT_WINDOW_MS = 45 * 60 * 1000;
 export const PENDING_WITHDRAWAL_WINDOW_MS = 3 * 60 * 60 * 1000;
 export const PAYMENT_ASSET_BUCKET = "payment-proofs";
-export const ACTIVE_ORDER_STATUSES = ["PENDING_DEPOSIT", "DEPOSIT_DETECTED", "DEPOSIT_CONFIRMED", "PROCESSING_PAYOUT", "PAYOUT_SENT"];
 export const ACTIVE_DEPOSIT_STATUSES = ["PENDING_DEPOSIT"];
 
 export function getEffectiveWithdrawalMin(minSellAmount: string) {

@@ -15,7 +15,7 @@ import { csrfFetch } from "@/lib/csrf";
 import { MAX_UPLOAD_BYTES, MAX_UPLOAD_MB } from "@/lib/transaction-rules";
 import { formatInr, formatUsdt, multiplyMoney } from "@/lib/utils";
 
-const fixedInrAmounts = ["5000", "10000", "20000", "30000", "50000"];
+const fixedInrAmounts = ["2500", "5000", "10000", "20000", "30000", "40000", "50000"];
 type SuccessDetails = {
   orderId: string;
   amountInr: string;

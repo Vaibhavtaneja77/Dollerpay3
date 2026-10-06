@@ -1,0 +1,19 @@
+{
+  "name": "DollerPay",
+  "short_name": "DollerPay",
+  "description": "USDT to INR payout operations platform",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fbfbfa",
+  "theme_color": "#050505",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

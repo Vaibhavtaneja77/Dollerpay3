@@ -4,7 +4,7 @@ import { requireCustomer } from "@/lib/auth";
 import { syncPendingExpirations } from "@/lib/expirations";
 import { getSafeUploadExtension, rateLimitResponse } from "@/lib/security";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { ACTIVE_DEPOSIT_STATUSES, ACTIVE_ORDER_STATUSES, MAX_UPLOAD_BYTES, MAX_UPLOAD_MB, PAYMENT_ASSET_BUCKET } from "@/lib/transaction-rules";
+import { MAX_UPLOAD_BYTES, MAX_UPLOAD_MB, PAYMENT_ASSET_BUCKET } from "@/lib/transaction-rules";
 import { orderCreateSchema } from "@/lib/validation";
 import { makeTicketId } from "@/lib/utils";
 
@@ -59,39 +59,6 @@ export async function POST(request: Request) {
 
     const { data: existing } = await supabase.from("orders").select("id,ticket_id").eq("idempotency_key", body.idempotency_key).eq("user_id", user.id).maybeSingle();
     if (existing) return ok({ order_id: existing.id, ticket_id: existing.ticket_id });
-
-    const [{ data: activeOrders, error: activeOrdersError }, { data: activeDeposits, error: activeDepositsError }] = await Promise.all([
-      supabase
-        .from("orders")
-        .select("id,ticket_id,status")
-        .eq("user_id", user.id)
-        .in("status", ACTIVE_ORDER_STATUSES)
-        .limit(1),
-      supabase
-        .from("deposit_requests_decrypted")
-        .select("id,ticket_id,status")
-        .eq("user_id", user.id)
-        .in("status", ACTIVE_DEPOSIT_STATUSES)
-        .limit(1)
-    ]);
-    if (activeOrdersError) throw activeOrdersError;
-    if (activeDepositsError) throw activeDepositsError;
-
-    const activeOrder = activeOrders?.[0];
-    const activeDeposit = activeDeposits?.[0];
-
-    if (activeOrder || activeDeposit) {
-      return ok(
-        {
-          error: "You already have an active order. Please wait until it is completed before placing another.",
-          code: "ACTIVE_ORDER_EXISTS",
-          active_order_id: activeOrder?.id ?? activeDeposit?.id,
-          active_ticket_id: activeOrder?.ticket_id ?? activeDeposit?.ticket_id,
-          active_order_type: activeOrder ? "sell" : "deposit"
-        },
-        { status: 422 }
-      );
-    }
 
     const { data: wallet, error: walletError } = await supabase
       .from("wallets")

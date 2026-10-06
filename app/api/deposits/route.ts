@@ -3,7 +3,7 @@ import { requireCustomer } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { rateLimitResponse } from "@/lib/security";
 import { syncPendingExpirations } from "@/lib/expirations";
-import { ACTIVE_DEPOSIT_STATUSES, ACTIVE_ORDER_STATUSES, MIN_TRANSACTION_USDT, PAYMENT_ASSET_BUCKET } from "@/lib/transaction-rules";
+import { ACTIVE_DEPOSIT_STATUSES, MIN_TRANSACTION_USDT, PAYMENT_ASSET_BUCKET } from "@/lib/transaction-rules";
 import { depositCreateSchema } from "@/lib/validation";
 import { formatUsdt, makeTicketId } from "@/lib/utils";
 
@@ -46,34 +46,24 @@ export async function POST(request: Request) {
       return ok({ error: `Minimum deposit amount is ${formatUsdt(minimumDeposit)}.` }, { status: 422 });
     }
 
-    const [{ data: activeDeposits, error: activeDepositsError }, { data: activeOrders, error: activeOrdersError }] = await Promise.all([
-      supabase
-        .from("deposit_requests_decrypted")
-        .select("id,ticket_id,status")
-        .eq("user_id", user.id)
-        .in("status", ACTIVE_DEPOSIT_STATUSES)
-        .limit(1),
-      supabase
-        .from("orders")
-        .select("id,ticket_id,status")
-        .eq("user_id", user.id)
-        .in("status", ACTIVE_ORDER_STATUSES)
-        .limit(1)
-    ]);
+    const { data: activeDeposits, error: activeDepositsError } = await supabase
+      .from("deposit_requests_decrypted")
+      .select("id,ticket_id,status")
+      .eq("user_id", user.id)
+      .in("status", ACTIVE_DEPOSIT_STATUSES)
+      .limit(1);
     if (activeDepositsError) throw activeDepositsError;
-    if (activeOrdersError) throw activeOrdersError;
 
     const activeDeposit = activeDeposits?.[0];
-    const activeOrder = activeOrders?.[0];
 
-    if (activeDeposit || activeOrder) {
+    if (activeDeposit) {
       return ok(
         {
-          error: "You already have an active order. Please wait until it is completed before placing another.",
-          code: "ACTIVE_ORDER_EXISTS",
-          active_order_id: activeDeposit?.id ?? activeOrder?.id,
-          active_ticket_id: activeDeposit?.ticket_id ?? activeOrder?.ticket_id,
-          active_order_type: activeDeposit ? "deposit" : "sell"
+          error: "You already have a pending top-up order. Please wait until it is completed before creating another top-up.",
+          code: "ACTIVE_TOPUP_EXISTS",
+          active_order_id: activeDeposit.id,
+          active_ticket_id: activeDeposit.ticket_id,
+          active_order_type: "deposit"
         },
         { status: 422 }
       );

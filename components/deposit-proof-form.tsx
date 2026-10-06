@@ -102,11 +102,12 @@ export function DepositProofForm({
   useEffect(() => {
     if (!payment?.depositId || verified) return;
 
+    const depositId = payment.depositId;
     let cancelled = false;
 
     async function checkStatus() {
       try {
-        const res = await csrfFetch(`/api/deposits/${payment.depositId}`);
+        const res = await csrfFetch(`/api/deposits/${depositId}`);
         const data = await res.json().catch(() => null);
         if (!cancelled && res.ok && data?.deposit?.status === "DEPOSIT_CONFIRMED") {
           setPayment((current) => current

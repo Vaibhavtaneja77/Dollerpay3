@@ -177,7 +177,7 @@ export function DepositProofForm({
           )}
 
           <div className="rounded-lg border border-line bg-white p-4">
-            <p className="text-xs font-medium uppercase text-zinc-500">Wallet address</p>
+            <p className="text-xs font-medium uppercase text-zinc-500">Address</p>
             <div className="mt-2 flex items-start justify-between gap-3">
               <p className="break-all font-mono text-sm text-zinc-700">{payment.walletAddress}</p>
               <CopyButton value={payment.walletAddress} label="Copy payment wallet"><Copy className="h-4 w-4" /></CopyButton>
@@ -187,10 +187,10 @@ export function DepositProofForm({
 
         <div className="mt-5 grid gap-3 text-sm leading-6">
           <p className="rounded-lg border border-red-200 bg-red-50 p-4 font-medium text-red-800">
-            Send only {payment.network} crypto to this wallet. Sending another crypto or using a wrong network can lead to permanent loss.
+            Send only {payment.network} crypto to this blockchain. Sending another crypto or using a wrong network can lead to permanent loss.
           </p>
           <p className="rounded-lg border border-amber-200 bg-amber-50 p-4 font-medium text-amber-900">
-            After payment, wait up to 15 minutes for the order to complete. It will be automatically verified on blockchain.
+            After payment, wait up to a minute for the order to complete. It will be automatically verified on blockchain.
           </p>
           {payment.couponCode ? (
             <p className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 font-medium text-emerald-900">
